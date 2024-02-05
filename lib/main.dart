@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_three_app/Homepage.dart';
 import 'package:web_three_app/Theme/theme.dart';
+import 'package:web_three_app/download.dart';
+import 'package:web_three_app/verify.dart';
+import 'ChatPage.dart';
 import 'Login.dart';
 
 GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
@@ -34,7 +37,9 @@ void main() async{
   else{
     state = false;
   }
-  runApp(const MyApp());
+  runApp(MaterialApp(
+    home: state ? MainScreen(data: data,): const LoginPage(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -50,3 +55,56 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+class MainScreen extends StatefulWidget {
+  final dynamic data; // Assuming you pass the necessary data for the HomePage
+
+  const MainScreen({Key? key, this.data}) : super(key: key);
+
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  int _selectedIndex = 0;
+
+  late final List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      HomePage(data: widget.data),
+      VerifyPage(),
+      DownloadPage(),
+      ChatPage(), // You'll need to create this page
+    ];
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _pages,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.verified), label: 'Verify'),
+          BottomNavigationBarItem(icon: Icon(Icons.download), label: 'Download'),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+      ),
+    );
+  }
+}
+
