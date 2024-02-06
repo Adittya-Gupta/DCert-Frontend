@@ -11,6 +11,7 @@ import 'package:web_three_app/verify.dart';
 import 'ChatPage.dart';
 import 'Login.dart';
 
+
 GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 bool state = false;
 late final prefs;
@@ -37,9 +38,7 @@ void main() async{
   else{
     state = false;
   }
-  runApp(MaterialApp(
-    home: state ? MainScreen(data: data,): const LoginPage(),
-  ));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -48,7 +47,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      home: state ?  HomePage(data: data) : const LoginPage(),
+      home: state ?  MainScreen(data: data) : const LoginPage(),
       theme: lightMode,
       darkTheme: darkMode,
       navigatorKey: navKey,
@@ -95,8 +94,10 @@ class _MainScreenState extends State<MainScreen> {
         children: _pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Theme.of(context).colorScheme.secondary,
+        unselectedItemColor: Theme.of(context).colorScheme.tertiary,
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.home) , label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.verified), label: 'Verify'),
           BottomNavigationBarItem(icon: Icon(Icons.download), label: 'Download'),
           BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),

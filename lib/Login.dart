@@ -7,12 +7,9 @@ import 'package:aad_oauth/model/failure.dart';
 import 'package:aad_oauth/model/token.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:office365_login_flutter/office365_login_flutter.dart';
 import 'package:web_three_app/Button.dart';
 import 'package:web_three_app/Homepage.dart';
-import 'package:web_three_app/box.dart';
 import 'package:web_three_app/main.dart';
-import 'package:web_three_app/navigatorKey.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -35,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
       loader: const Center(child: CircularProgressIndicator()),
       navigatorKey: navKey,
     ));
-    _getUserInfo(token) async {
+    getUserInfo(token) async {
       Response response;
       Dio dio = Dio();
       response = await dio.get(
@@ -46,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
               }));
       return response.data;
     }
-    _loginWithMicrosoft() async {
+    loginWithMicrosoft() async {
       var result = await microsoftSignIn.login();
 
       result.fold(
@@ -62,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
         // Handle successful login
 
         // Perform necessary actions with the access token, such as API calls or storing it securely.
-        var userInfo = await _getUserInfo(token.accessToken);
+        var userInfo = await getUserInfo(token.accessToken);
         await prefs.setString('access_token', token.accessToken);
         await prefs.setString('token_expiry', DateTime.now().add(const Duration(hours: 1)).toIso8601String());
         Navigator.of(context).pushReplacement(
@@ -91,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
               MyButton(color: Theme
                   .of(context)
                   .colorScheme
-                  .secondary, onPressed: () => _loginWithMicrosoft()),
+                  .secondary, onPressed: () => loginWithMicrosoft()),
             ],
           )
       ),
