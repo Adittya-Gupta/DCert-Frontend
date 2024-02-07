@@ -12,6 +12,7 @@ import 'package:web_three_app/verify.dart';
 import 'ChatPage.dart';
 import 'Login.dart';
 
+
 GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 bool state = false;
 late final prefs;
@@ -39,11 +40,14 @@ void main() async{
   else{
     state = false;
   }
+<<<<<<< HEAD
   // runApp(MaterialApp(
   //   home: state ? MainScreen(data: data,): const LoginPage(),
   //   navigatorKey: navKey,
   // ));
 
+=======
+>>>>>>> 870748fee6328fcae489e9e4f26d5d405069322d
   runApp(const MyApp());
 }
 
@@ -101,8 +105,10 @@ class _MainScreenState extends State<MainScreen> {
         children: _pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Theme.of(context).colorScheme.secondary,
+        unselectedItemColor: Theme.of(context).colorScheme.tertiary,
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.home) , label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.verified), label: 'Verify'),
           BottomNavigationBarItem(icon: Icon(Icons.download), label: 'Download'),
           BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
