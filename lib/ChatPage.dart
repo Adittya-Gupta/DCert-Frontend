@@ -36,6 +36,7 @@ class _ChatPageState extends State<ChatPage> {
         child: ElevatedButton(
           onPressed: startConversation,
           child: Text('Start Chat'),
+          style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.orangeAccent)),
         ),
       ),
     );

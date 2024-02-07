@@ -10,10 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:web_three_app/Button.dart';
 import 'package:web_three_app/Homepage.dart';
 import 'package:web_three_app/main.dart';
-<<<<<<< HEAD
 
-=======
->>>>>>> 870748fee6328fcae489e9e4f26d5d405069322d
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

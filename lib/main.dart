@@ -40,14 +40,14 @@ void main() async{
   else{
     state = false;
   }
-<<<<<<< HEAD
+
   // runApp(MaterialApp(
   //   home: state ? MainScreen(data: data,): const LoginPage(),
   //   navigatorKey: navKey,
   // ));
 
-=======
->>>>>>> 870748fee6328fcae489e9e4f26d5d405069322d
+
+
   runApp(const MyApp());
 }
 
