@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_three_app/Homepage.dart';
@@ -19,6 +20,7 @@ dynamic data;
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   prefs = await SharedPreferences.getInstance();
+
   final String? accessToken = await prefs.getString('access_token');
   final String? tokenExpiry = await prefs.getString('token_expiry');
   if (accessToken != null && tokenExpiry != null && DateTime.tryParse(tokenExpiry)!.isAfter(DateTime.now())) {
@@ -37,9 +39,12 @@ void main() async{
   else{
     state = false;
   }
-  runApp(MaterialApp(
-    home: state ? MainScreen(data: data,): const LoginPage(),
-  ));
+  // runApp(MaterialApp(
+  //   home: state ? MainScreen(data: data,): const LoginPage(),
+  //   navigatorKey: navKey,
+  // ));
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -48,7 +53,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      home: state ?  HomePage(data: data) : const LoginPage(),
+      home: state ?  MainScreen(data: data) : const LoginPage(),
       theme: lightMode,
       darkTheme: darkMode,
       navigatorKey: navKey,
@@ -90,6 +95,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: CupertinoColors.systemYellow,
       body: IndexedStack(
         index: _selectedIndex,
         children: _pages,
@@ -103,6 +109,7 @@ class _MainScreenState extends State<MainScreen> {
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        backgroundColor: Colors.yellow
       ),
     );
   }
