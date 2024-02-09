@@ -14,9 +14,12 @@ class Mybox extends StatelessWidget{
         color: color,
         borderRadius: BorderRadius.circular(8),
       ),
-      width: width,
       height: height,
-      child: child,
+      width: width,
+      padding: const EdgeInsets.all(5),
+      child: Center(
+        child: child
+      ),
     );
   }
 }

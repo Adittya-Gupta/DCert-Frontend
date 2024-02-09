@@ -50,6 +50,7 @@ dependencies:
   permission_handler:
   pointycastle: ^3.7.4
   asn1lib: ^1.5.2
+  lottie: ^3.0.0
 
 
 dev_dependencies:
@@ -79,9 +80,13 @@ flutter:
     - family: Centauri
       fonts:
         - asset: lib/assets/fonts/Centauri.ttf
+    - family: Exo
+      fonts:
+        - asset: lib/assets/fonts/Exo.ttf
 
   assets:
     - lib/assets/images/
+    - lib/assets/lottie/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

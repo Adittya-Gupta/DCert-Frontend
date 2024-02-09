@@ -4,11 +4,14 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:kommunicate_flutter/kommunicate_flutter.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_three_app/Homepage.dart';
 import 'package:web_three_app/Theme/theme.dart';
 import 'package:web_three_app/download.dart';
 import 'package:web_three_app/verify.dart';
+import 'AdminHomePage.dart';
 import 'ChatPage.dart';
 import 'Login.dart';
 
@@ -17,13 +20,17 @@ GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 bool state = false;
 late final prefs;
 dynamic data;
-
+const admins = ['g.aditya@iitg.ac.in'];
+late final String privateKey;
+List<dynamic> urls = [];
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   prefs = await SharedPreferences.getInstance();
 
   final String? accessToken = await prefs.getString('access_token');
   final String? tokenExpiry = await prefs.getString('token_expiry');
+  privateKey = await prefs.getString('privateKey') ?? '';
+  print(privateKey);
   if (accessToken != null && tokenExpiry != null && DateTime.tryParse(tokenExpiry)!.isAfter(DateTime.now())) {
     // Token is valid, proceed with automatic login
     state = true;
@@ -36,11 +43,13 @@ void main() async{
               HttpHeaders.authorizationHeader: accessToken,
             }));
     data = response.data;
+    response = await dio.get("https://siangkriti.eu.pythonanywhere.com/getcerts?email='${data['mail']}'");
+    urls = response.data["urls"];
   }
   else{
     state = false;
   }
-
+  // urls = response.data["urls"];
   // runApp(MaterialApp(
   //   home: state ? MainScreen(data: data,): const LoginPage(),
   //   navigatorKey: navKey,
@@ -55,15 +64,25 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    bool isAdmin = false;
+    if (data != null) {
+      for (var i in admins) {
+        if (data['mail'] == i) {
+          isAdmin = true;
+          break;
+        }
+      }
+    }
     return MaterialApp(
       title: 'Flutter Demo',
-      home: state ?  MainScreen(data: data) : const LoginPage(),
+      home: isAdmin ? AdminHomePage(data: data) : ( state ?  MainScreen(data: data,) : const LoginPage()),
       theme: lightMode,
       darkTheme: darkMode,
       navigatorKey: navKey,
     );
   }
 }
+
 
 class MainScreen extends StatefulWidget {
   final dynamic data; // Assuming you pass the necessary data for the HomePage
@@ -85,8 +104,7 @@ class _MainScreenState extends State<MainScreen> {
     _pages = [
       HomePage(data: widget.data),
       VerifyPage(),
-      DownloadPage(),
-      ChatPage(), // You'll need to create this page
+      DownloadPage()
     ];
   }
 
@@ -98,8 +116,45 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    void startConversation() async {
+      try {
+        showDialog(
+            context: context,
+            builder: (_) =>AlertDialog(
+              title: const Text('Waking up the bot'),
+              content: Lottie.asset('lib/assets/lottie/loading.json'),
+            )
+        );
+        dynamic conversationObject = {
+          'appId':
+          "37096eb8e7331568b71e200af3046e5a9", // Replace with your Kommunicate App ID
+          // You can customize this object as needed; refer to the Kommunicate documentation for more options
+        };
+
+        KommunicateFlutterPlugin.buildConversation(conversationObject)
+            .then((result) {
+              Navigator.pop(context);
+          print("Conversation builder success: $result");
+        }).catchError((error) {
+          print("Conversation builder error: $error");
+        });
+      } catch (e) {
+        print("Error occurred while building conversation: $e");
+      }
+    }
     return Scaffold(
-      backgroundColor: CupertinoColors.systemYellow,
+      resizeToAvoidBottomInset: false,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.transparent,
+        onPressed: () => startConversation(),
+        child: Lottie.asset(
+          'lib/assets/lottie/chatbot.json',
+          width: 80,
+          height: 80,
+          fit: BoxFit.fill,
+        )
+      ),
+      backgroundColor: Colors.transparent,
       body: IndexedStack(
         index: _selectedIndex,
         children: _pages,
@@ -111,13 +166,20 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.home) , label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.verified), label: 'Verify'),
           BottomNavigationBarItem(icon: Icon(Icons.download), label: 'Download'),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        backgroundColor: Colors.yellow
+        backgroundColor: Colors.transparent
       ),
     );
+  }
+}
+
+extension DarkMode on BuildContext {
+  /// is dark mode currently enabled?
+  bool get isDarkMode {
+    final brightness = MediaQuery.of(this).platformBrightness;
+    return brightness == Brightness.dark;
   }
 }
 
