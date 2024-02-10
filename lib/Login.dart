@@ -8,6 +8,7 @@ import 'package:aad_oauth/model/failure.dart';
 import 'package:aad_oauth/model/token.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
 import 'package:web_three_app/Button.dart';
 import 'package:web_three_app/Homepage.dart';
@@ -47,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
     getPrivatekey() async {
       Response response;
       Dio dio = Dio();
-      response = await dio.get('https://siangkriti.eu.pythonanywhere.com/getkeys');
+      response = await dio.get("https://siangkriti.eu.pythonanywhere.com/getkeys?email='${data['mail']}'");
       print(response.data);
       var x =  response.data;
       print(x);
@@ -77,20 +78,24 @@ class _LoginPageState extends State<LoginPage> {
           );
           // Perform necessary actions with the access token, such as API calls or storing it securely.
           var userInfo = await getUserInfo(token.accessToken);
+          data = userInfo;
           Response response;
           Dio dio = Dio();
-          response = await dio.get("https://siangkriti.eu.pythonanywhere.com/getcerts?email='${userInfo['mail']}'");
-          urls = response.data["urls"];
           var privateKey = await prefs.getString('privateKey');
+          print("lksdlfsd");
           if (privateKey == null) {
             privateKey = await getPrivatekey();
             print(privateKey);
             await prefs.setString('privateKey', privateKey);
           }
+          print("hsdlkflsdjflksdjf");
+          response = await dio.get("https://siangkriti.eu.pythonanywhere.com/getcerts?email='${userInfo['mail']}'");
+          print("sldkfsldkflsd");
+          urls = response.data["urls"];
+
           await prefs.setString('access_token', token.accessToken);
           await prefs.setString('token_expiry',
               DateTime.now().add(const Duration(hours: 1)).toIso8601String());
-          data = userInfo;
 
           Navigator.pop(context);
           Navigator.of(context).pushReplacement(
@@ -106,29 +111,62 @@ class _LoginPageState extends State<LoginPage> {
     // Scaffold is a layout for the major Material Components.
     return Scaffold(
         body: Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         image: DecorationImage(
-          image: context.isDarkMode
-              ? const AssetImage("lib/assets/images/dark-background.png")
-              : const AssetImage("lib/assets/images/light-background.png"),
+          image: AssetImage("lib/assets/images/login.png"),
           fit: BoxFit.cover,
         ),
       ),
       child: Center(
           child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const Text('Login',
+          const SizedBox(height: 50,),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
+            child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image(
+                image: AssetImage("lib/assets/images/logow.png"),
+                width: 50,
+                height: 50,
+              ),
+              Spacer(),
+              Text('Login',
+                  style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Exo')),
+            ],
+          ),),
+          const SizedBox(height: 200),
+          const Text('Make your',
               style: TextStyle(
-                  fontSize: 30,
+                  fontSize: 50,
                   fontWeight: FontWeight.bold,
-                  fontFamily: 'Centauri')),
+                  fontFamily: 'Exo')),
+          const Text('grade',
+              style: TextStyle(
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Exo')),
+          const Text('Card',
+              style: TextStyle(
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Exo')),
+          const Text('Secure!',
+              style: TextStyle(
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Exo')),
           const SizedBox(height: 70,),
           MyButton(
-              color: Colors.blueAccent,
+              color: const Color(0xE23372c7),
               onPressed: () => loginWithMicrosoft(),
           text: 'Login with Outlook',
-          icon: Icons.mail
+          image: SvgPicture.asset('lib/assets/icons/outlook.svg', width: 30, height: 30),
           )
         ],
       )),

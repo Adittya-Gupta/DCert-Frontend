@@ -43,7 +43,7 @@ class _DownloadPage extends State<DownloadPage> {
   Future<File> _storeFile(String url, List<int> bytes) async {
     final filename = basename(url);
     final file = File('/storage/emulated/0/Download/$filename.pdf');
-    await file.writeAsBytes(bytes, flush: true);
+    if(!(await file.exists())) await file.writeAsBytes(bytes, flush: true);
     if (kDebugMode) {
       print('$file');
     }
@@ -53,7 +53,15 @@ class _DownloadPage extends State<DownloadPage> {
   @override
   Widget build(BuildContext context) {
     handleDownload(url) async {
+      showDialog(context: context, builder:
+          (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Downloading'),
+          content: Lottie.asset('lib/assets/lottie/loading.json', height: 100, width: 100),
+        );
+      });
       final file = await loadPdfFromNetwork(url);
+      Navigator.pop(context);
       openPdf(context, file, url);
     }
 
@@ -71,13 +79,26 @@ class _DownloadPage extends State<DownloadPage> {
       child: Center(
         child: SingleChildScrollView(
     child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const Text('Download',
-                style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Centauri')),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image(
+                    image: AssetImage("lib/assets/images/logow.png"),
+                    width: 40,
+                    height: 40,
+                  ),
+                  Spacer(),
+                  Text('Download',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Centauri')),
+                ],
+              ),),
             const SizedBox(height: 70),
             ProfileOverview(image: Lottie.asset('lib/assets/lottie/downloadimage.json', width: 125, height: 125,)),
             const SizedBox(height: 150),
@@ -99,7 +120,7 @@ class _DownloadPage extends State<DownloadPage> {
                   MyButton(
                     color: Theme.of(context).colorScheme.primary,
                     onPressed: () => handleDownload(x[0]),
-                    text: 'Certificate from ${x[1]}',
+                    text: 'Certificate from ${x[1].length > 10 ? x[1].substring(0, 10) + '...' : x[1]}',
                     icon: Icons.download,
                   ),
                   const SizedBox(height: 30),

@@ -51,6 +51,8 @@ dependencies:
   pointycastle: ^3.7.4
   asn1lib: ^1.5.2
   lottie: ^3.0.0
+  flutter_svg: ^2.0.9
+  flutter_launcher_icons: ^0.13.1
 
 
 dev_dependencies:
@@ -87,6 +89,12 @@ flutter:
   assets:
     - lib/assets/images/
     - lib/assets/lottie/
+    - lib/assets/icons/
+
+flutter_icons:
+    android: true
+    ios: true
+    image_path: "lib/assets/images/app_logo.png"
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

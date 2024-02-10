@@ -31,6 +31,15 @@ class _VerifyPage extends State<VerifyPage> {
     }
   }
   void handleUpload(url) async {
+    showDialog(context: context,
+        builder:
+            (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Verifying'),
+            content: Lottie.asset('lib/assets/lottie/verifying.json', height: 100, width: 100),
+          );
+        }
+    );
     final result = this.result;
     if (result != null) {
       var request = http.MultipartRequest('POST', Uri.parse(url));
@@ -39,7 +48,17 @@ class _VerifyPage extends State<VerifyPage> {
       request.fields['email'] = emailController.text;
       var res = await request.send();
       var response = await http.Response.fromStream(res);
-      print("sending request");
+      Navigator.pop(context);
+      SnackBar snackBar = SnackBar(
+        content: Row(
+          children: [
+            Text((response.body=="True") ? "Certificate is verified" : "Certificate can't be verified"),
+            const SizedBox(width: 10),
+            Lottie.asset((response.body=="True") ? 'lib/assets/lottie/verify.json' : 'lib/assets/lottie/wrong.json', width: 30, height: 30,),
+          ],
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
       print(response.body);
     } else {
       // User hasn't selected a file
@@ -61,13 +80,27 @@ class _VerifyPage extends State<VerifyPage> {
       ),
       child: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const Text('Verify Certificates',
-                style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Centauri')),
+            const SizedBox(height: 60),
+            const Padding(
+                padding: EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image(
+                      image: AssetImage("lib/assets/images/logow.png"),
+                      width: 40,
+                      height: 40,
+                    ),
+                    Spacer(),
+                    Text('Verify Certificate',
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Centauri')),
+                  ],
+                )),
             const SizedBox(height: 50),
             ProfileOverview(image: Lottie.asset('lib/assets/lottie/verification.json', width: 125, height: 125,)),
             const SizedBox(height: 100),

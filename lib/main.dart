@@ -107,13 +107,11 @@ class _MainScreenState extends State<MainScreen> {
       DownloadPage()
     ];
   }
-
+  PageController _pageController = PageController(initialPage: 0);
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    _pageController.animateToPage(index,
+        duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
   }
-
   @override
   Widget build(BuildContext context) {
     void startConversation() async {
@@ -155,8 +153,13 @@ class _MainScreenState extends State<MainScreen> {
         )
       ),
       backgroundColor: Colors.transparent,
-      body: IndexedStack(
-        index: _selectedIndex,
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
         children: _pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -169,7 +172,7 @@ class _MainScreenState extends State<MainScreen> {
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        backgroundColor: Colors.transparent
+        backgroundColor: context.isDarkMode ?  Colors.transparent : const Color(0xFFFBAE1A),
       ),
     );
   }
