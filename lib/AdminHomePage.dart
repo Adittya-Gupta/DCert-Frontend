@@ -37,7 +37,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
           'file', result.files.single.path ?? ''));
       request.fields['remail'] = emailController.text;
       request.fields['omail'] = widget.data['mail'];
-      request.fields['docname'] = "certificate1";
+      request.fields['docname'] = "certificate" + DateTime.now().toString();
       print(request.fields);
       showDialog(context: context,
           builder: (BuildContext context) {

@@ -124,8 +124,7 @@ class _MainScreenState extends State<MainScreen> {
             )
         );
         dynamic conversationObject = {
-          'appId':
-          "37096eb8e7331568b71e200af3046e5a9", // Replace with your Kommunicate App ID
+          'appId': '37096eb8e7331568b71e200af3046e5a9', // Replace with your Kommunicate App ID
           // You can customize this object as needed; refer to the Kommunicate documentation for more options
         };
 
