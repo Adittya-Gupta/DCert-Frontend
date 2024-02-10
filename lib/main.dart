@@ -20,7 +20,7 @@ GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 bool state = false;
 late final prefs;
 dynamic data;
-const admins = ['g.aditya@iitg.ac.in'];
+const admins = ['g.aditya@iitg.ac.in' , 'd.rupayan@iitg.ac.in'];
 late final String privateKey;
 List<dynamic> urls = [];
 void main() async{
