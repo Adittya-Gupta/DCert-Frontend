@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:kommunicate_flutter/kommunicate_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:web_three_app/main.dart';
 import 'Button.dart';
@@ -37,7 +38,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
           'file', result.files.single.path ?? ''));
       request.fields['remail'] = emailController.text;
       request.fields['omail'] = widget.data['mail'];
-      request.fields['docname'] = "certificate" + DateTime.now().toString();
+      request.fields['docname'] = "certificate${DateTime.now()}";
       print(request.fields);
       showDialog(context: context,
           builder: (BuildContext context) {
@@ -63,8 +64,43 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    void startConversation() async {
+      try {
+        showDialog(
+            context: context,
+            builder: (_) =>AlertDialog(
+              title: const Text('Waking up the bot'),
+              content: Lottie.asset('lib/assets/lottie/loading.json'),
+            )
+        );
+        dynamic conversationObject = {
+          'appId': '37096eb8e7331568b71e200af3046e5a9', // Replace with your Kommunicate App ID
+          // You can customize this object as needed; refer to the Kommunicate documentation for more options
+        };
+
+        KommunicateFlutterPlugin.buildConversation(conversationObject)
+            .then((result) {
+          Navigator.pop(context);
+          print("Conversation builder success: $result");
+        }).catchError((error) {
+          print("Conversation builder error: $error");
+        });
+      } catch (e) {
+        print("Error occurred while building conversation: $e");
+      }
+    }
     return Scaffold(
         resizeToAvoidBottomInset: false,
+        floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.transparent,
+            onPressed: () => startConversation(),
+            child: Lottie.asset(
+              'lib/assets/lottie/chatbot.json',
+              width: 80,
+              height: 80,
+              fit: BoxFit.fill,
+            )
+        ),
         body: Container(
       decoration: BoxDecoration(
         image: DecorationImage(

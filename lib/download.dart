@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:web_three_app/Button.dart';
@@ -52,6 +54,20 @@ class _DownloadPage extends State<DownloadPage> {
 
   @override
   Widget build(BuildContext context) {
+    handleReload() async {
+      showDialog(context: context, builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Reloading'),
+          content: Lottie.asset('lib/assets/lottie/loading.json', height: 100, width: 100),
+        );
+      });
+      Response response;
+      Dio dio = Dio();
+      response = await dio.get("https://siangkriti.eu.pythonanywhere.com/getcerts?email='${data['mail']}'");
+      urls = response.data["urls"];
+      Navigator.pop(context);
+      setState(() {});
+    }
     handleDownload(url) async {
       showDialog(context: context, builder:
           (BuildContext context) {
@@ -102,16 +118,19 @@ class _DownloadPage extends State<DownloadPage> {
             const SizedBox(height: 70),
             ProfileOverview(image: Lottie.asset('lib/assets/lottie/downloadimage.json', width: 125, height: 125,)),
             const SizedBox(height: 150),
-            Mybox(
-              color: Theme.of(context).colorScheme.primary,
+            Container(
               height:60,
-              child:const Text('Here are all your certificates',
+              padding: const EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
+              child:Row(
+                children:[const Text('Here are all your certificates',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Exo',
                   )),
-            ),
+                const Spacer(),
+                MyButton(text: "", icon: Icons.loop, color: Theme.of(context).colorScheme.primary, width: 100, onPressed: ()=>handleReload(),)],
+            )),
             const SizedBox(height: 70),
 
             for(var x in urls)

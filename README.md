@@ -1,12 +1,16 @@
-# web_three_app
+# D-Doc Frontend
 
+The frontend of the app is implemented using Flutter
 
-## TO DO
+## Development Steps
 
-- [x] Login page and functionality added
-- [x] Home page designed
-- [] Pfp is hardcoded.... Bring it from azure
-- [] Add a new page for the user to verify certificate
-- [] Add a new page for the user to download certificate
-- [] Add a navbar
-- [] Add a chat-bot
+- Clone the repository 
+- Run `flutter pub get`
+- Run the app in debug mode
+
+## Screens 
+
+- *Home Page* : This page shows the basic info. associated with each account
+- *Verify Page* : This page takes the email id of the issuer organisation, the pdf that is to be verified and tells if the certificate is valid or not
+- *Download Page* : On this page we can download our certificates that are issued to us
+- *Chat bot page* : This chat-bot will answer queries related to app 
