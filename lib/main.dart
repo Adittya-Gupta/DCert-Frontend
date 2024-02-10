@@ -23,6 +23,7 @@ dynamic data;
 const admins = ['g.aditya@iitg.ac.in'];
 late final String privateKey;
 List<dynamic> urls = [];
+bool isAdmin = false;
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   prefs = await SharedPreferences.getInstance();
@@ -49,6 +50,14 @@ void main() async{
   else{
     state = false;
   }
+  if (data != null) {
+    for (var i in admins) {
+      if (data['mail'] == i) {
+        isAdmin = true;
+        break;
+      }
+    }
+  }
   // urls = response.data["urls"];
   // runApp(MaterialApp(
   //   home: state ? MainScreen(data: data,): const LoginPage(),
@@ -64,15 +73,7 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    bool isAdmin = false;
-    if (data != null) {
-      for (var i in admins) {
-        if (data['mail'] == i) {
-          isAdmin = true;
-          break;
-        }
-      }
-    }
+
     return MaterialApp(
       title: 'Flutter Demo',
       home: isAdmin ? AdminHomePage(data: data) : ( state ?  MainScreen(data: data,) : const LoginPage()),

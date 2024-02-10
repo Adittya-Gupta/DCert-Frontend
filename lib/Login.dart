@@ -10,6 +10,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:web_three_app/AdminHomePage.dart';
 import 'package:web_three_app/Button.dart';
 import 'package:web_three_app/Homepage.dart';
 import 'package:web_three_app/main.dart';
@@ -92,7 +93,12 @@ class _LoginPageState extends State<LoginPage> {
           response = await dio.get("https://siangkriti.eu.pythonanywhere.com/getcerts?email='${userInfo['mail']}'");
           print("sldkfsldkflsd");
           urls = response.data["urls"];
-
+          for (var i in admins) {
+            if (data['mail'] == i) {
+              isAdmin = true;
+              break;
+            }
+          }
           await prefs.setString('access_token', token.accessToken);
           await prefs.setString('token_expiry',
               DateTime.now().add(const Duration(hours: 1)).toIso8601String());
@@ -100,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pop(context);
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => MainScreen(data: userInfo),
+              builder: (context) => isAdmin ?  AdminHomePage(data: userInfo) : MainScreen(data: userInfo),
             ),
           );
           await microsoftSignIn.logout();
