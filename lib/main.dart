@@ -20,7 +20,7 @@ GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 bool state = false;
 late final prefs;
 dynamic data;
-const admins = ['g.aditya@iitg.ac.in'];
+const admins = ['g.aditya@iitg.ac.in' , 'd.rupayan@iitg.ac.in'];
 late final String privateKey;
 List<dynamic> urls = [];
 void main() async{
@@ -124,8 +124,7 @@ class _MainScreenState extends State<MainScreen> {
             )
         );
         dynamic conversationObject = {
-          'appId':
-          "37096eb8e7331568b71e200af3046e5a9", // Replace with your Kommunicate App ID
+          'appId': '37096eb8e7331568b71e200af3046e5a9', // Replace with your Kommunicate App ID
           // You can customize this object as needed; refer to the Kommunicate documentation for more options
         };
 
