@@ -37,24 +37,27 @@ class _LoginPageState extends State<LoginPage> {
       navigatorKey: navKey,
     ));
     getUserInfo(token) async {
-      Response response;
+      Response responses;
       Dio dio = Dio();
-      response = await dio.get('https://graph.microsoft.com/v1.0/me',
+      responses = await dio.get('https://graph.microsoft.com/v1.0/me',
           options: Options(headers: {
             HttpHeaders.authorizationHeader: '$token',
           }));
 
-      return response.data;
+      return responses.data;
     }
+
     getPrivatekey() async {
       Response response;
       Dio dio = Dio();
-      response = await dio.get("https://siangkriti.eu.pythonanywhere.com/getkeys?email='${data['mail']}'");
+      response = await dio.get(
+          "https://siangkriti.eu.pythonanywhere.com/getkeys?email='${data['mail']}'");
       print(response.data);
-      var x =  response.data;
+      var x = response.data;
       print(x);
       return x['pri'];
     }
+
     loginWithMicrosoft() async {
       var result = await microsoftSignIn.login();
 
@@ -72,11 +75,10 @@ class _LoginPageState extends State<LoginPage> {
           // Handle successful login
           showDialog(
               context: context,
-              builder: (_) =>AlertDialog(
-                title: const Text('Let us set up your account'),
-                content: Lottie.asset('lib/assets/lottie/loading.json'),
-              )
-          );
+              builder: (_) => AlertDialog(
+                    title: const Text('Let us set up your account'),
+                    content: Lottie.asset('lib/assets/lottie/loading.json'),
+                  ));
           // Perform necessary actions with the access token, such as API calls or storing it securely.
           var userInfo = await getUserInfo(token.accessToken);
           data = userInfo;
@@ -90,7 +92,8 @@ class _LoginPageState extends State<LoginPage> {
             await prefs.setString('privateKey', privateKey);
           }
           print("hsdlkflsdjflksdjf");
-          response = await dio.get("https://siangkriti.eu.pythonanywhere.com/getcerts?email='${userInfo['mail']}'");
+          response = await dio.get(
+              "https://siangkriti.eu.pythonanywhere.com/getcerts?email='${userInfo['mail']}'");
           print("sldkfsldkflsd");
           urls = response.data["urls"];
           for (var i in admins) {
@@ -106,7 +109,9 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pop(context);
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => isAdmin ?  AdminHomePage(data: userInfo) : MainScreen(data: userInfo),
+              builder: (context) => isAdmin
+                  ? AdminHomePage(data: userInfo)
+                  : MainScreen(data: userInfo),
             ),
           );
           await microsoftSignIn.logout();
@@ -127,25 +132,28 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const SizedBox(height: 50,),
+          const SizedBox(
+            height: 50,
+          ),
           const Padding(
             padding: EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
             child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image(
-                image: AssetImage("lib/assets/images/logow.png"),
-                width: 50,
-                height: 50,
-              ),
-              Spacer(),
-              Text('Login',
-                  style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Exo')),
-            ],
-          ),),
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image(
+                  image: AssetImage("lib/assets/images/logow.png"),
+                  width: 50,
+                  height: 50,
+                ),
+                Spacer(),
+                Text('Login',
+                    style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Exo')),
+              ],
+            ),
+          ),
           const SizedBox(height: 200),
           const Text('Make your',
               style: TextStyle(
@@ -167,12 +175,15 @@ class _LoginPageState extends State<LoginPage> {
                   fontSize: 50,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Exo')),
-          const SizedBox(height: 70,),
+          const SizedBox(
+            height: 70,
+          ),
           MyButton(
-              color: const Color(0xE23372c7),
-              onPressed: () => loginWithMicrosoft(),
-          text: 'Login with Outlook',
-          image: SvgPicture.asset('lib/assets/icons/outlook.svg', width: 30, height: 30),
+            color: const Color(0xE23372c7),
+            onPressed: () => loginWithMicrosoft(),
+            text: 'Login with Outlook',
+            image: SvgPicture.asset('lib/assets/icons/outlook.svg',
+                width: 30, height: 30),
           )
         ],
       )),
